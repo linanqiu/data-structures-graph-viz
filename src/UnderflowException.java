@@ -7,11 +7,10 @@
  * Written by Sasha Beltinova, sab2229.
  * 
  */
+@SuppressWarnings("serial")
 public class UnderflowException extends Exception {
-    
-    public String UnderflowException(){
-        
-        return ("Oh no! There's UNDERFLOW!!!");
-    }
 
+  public UnderflowException() {
+    super("Underflow exception encountered");
+  }
 }
