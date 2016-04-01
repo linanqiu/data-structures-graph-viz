@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -10,6 +11,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
@@ -23,14 +26,15 @@ import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JSeparator;
 
 @SuppressWarnings("serial")
 public class Display extends JFrame {
@@ -45,6 +49,7 @@ public class Display extends JFrame {
   private JComboBox<String> unweightedEndCityComboBox;
   private JComboBox<String> unweightedStartCityComboBox;
   private Graph graph;
+  private JCheckBox chckbxShowEdgeWeights;
 
   /**
    * Launch the application.
@@ -113,9 +118,9 @@ public class Display extends JFrame {
     setContentPane(contentPane);
     GridBagLayout gbl_contentPane = new GridBagLayout();
     gbl_contentPane.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0 };
-    gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     gbl_contentPane.columnWeights = new double[] { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE };
-    gbl_contentPane.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+    gbl_contentPane.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
     contentPane.setLayout(gbl_contentPane);
 
     graph = readGraph("cityxy.txt", "citypairs.txt");
@@ -128,7 +133,7 @@ public class Display extends JFrame {
     gbc_panel.gridx = 0;
     gbc_panel.gridy = 0;
     contentPane.add(panel, gbc_panel);
-    
+
     JSeparator separator = new JSeparator();
     separator.setBackground(Color.WHITE);
     separator.setForeground(Color.GRAY);
@@ -137,53 +142,100 @@ public class Display extends JFrame {
     gbc_separator.gridwidth = 6;
     gbc_separator.insets = new Insets(0, 0, 5, 0);
     gbc_separator.gridx = 0;
-    gbc_separator.gridy = 1;
+    gbc_separator.gridy = 2;
     contentPane.add(separator, gbc_separator);
-
-    JLabel lblReloadGraph = new JLabel("Load / Reload Graph");
-    GridBagConstraints gbc_lblReloadGraph = new GridBagConstraints();
-    gbc_lblReloadGraph.anchor = GridBagConstraints.EAST;
-    gbc_lblReloadGraph.insets = new Insets(0, 0, 5, 5);
-    gbc_lblReloadGraph.gridx = 0;
-    gbc_lblReloadGraph.gridy = 2;
-    contentPane.add(lblReloadGraph, gbc_lblReloadGraph);
-
-    txtCityxytxt = new JTextField();
-    txtCityxytxt.setText("cityxy.txt");
-    GridBagConstraints gbc_txtCityxytxt = new GridBagConstraints();
-    gbc_txtCityxytxt.gridwidth = 2;
-    gbc_txtCityxytxt.insets = new Insets(0, 0, 5, 5);
-    gbc_txtCityxytxt.fill = GridBagConstraints.HORIZONTAL;
-    gbc_txtCityxytxt.gridx = 1;
-    gbc_txtCityxytxt.gridy = 2;
-    contentPane.add(txtCityxytxt, gbc_txtCityxytxt);
-    txtCityxytxt.setColumns(10);
-
-    txtCitypairstxt = new JTextField();
-    txtCitypairstxt.setText("citypairs.txt");
-    GridBagConstraints gbc_txtCitypairstxt = new GridBagConstraints();
-    gbc_txtCitypairstxt.gridwidth = 2;
-    gbc_txtCitypairstxt.insets = new Insets(0, 0, 5, 5);
-    gbc_txtCitypairstxt.fill = GridBagConstraints.HORIZONTAL;
-    gbc_txtCitypairstxt.gridx = 3;
-    gbc_txtCitypairstxt.gridy = 2;
-    contentPane.add(txtCitypairstxt, gbc_txtCitypairstxt);
-    txtCitypairstxt.setColumns(10);
-
-    JButton btnReloadGraph = new JButton("Load / Reset");
-    GridBagConstraints gbc_btnReloadGraph = new GridBagConstraints();
-    gbc_btnReloadGraph.fill = GridBagConstraints.HORIZONTAL;
-    gbc_btnReloadGraph.insets = new Insets(0, 0, 5, 0);
-    gbc_btnReloadGraph.gridx = 5;
-    gbc_btnReloadGraph.gridy = 2;
-    contentPane.add(btnReloadGraph, gbc_btnReloadGraph);
+    
+        chckbxShowEdgeWeights = new JCheckBox("Show Edge Weights");
+        chckbxShowEdgeWeights.addItemListener(new ItemListener() {
+          public void itemStateChanged(ItemEvent e) {
+            repaint();
+          }
+        });
+        
+            JLabel lblReloadGraph = new JLabel("Load / Reload Graph");
+            GridBagConstraints gbc_lblReloadGraph = new GridBagConstraints();
+            gbc_lblReloadGraph.anchor = GridBagConstraints.EAST;
+            gbc_lblReloadGraph.insets = new Insets(0, 0, 5, 5);
+            gbc_lblReloadGraph.gridx = 0;
+            gbc_lblReloadGraph.gridy = 3;
+            contentPane.add(lblReloadGraph, gbc_lblReloadGraph);
+        
+            txtCityxytxt = new JTextField();
+            txtCityxytxt.setText("cityxy.txt");
+            GridBagConstraints gbc_txtCityxytxt = new GridBagConstraints();
+            gbc_txtCityxytxt.gridwidth = 2;
+            gbc_txtCityxytxt.insets = new Insets(0, 0, 5, 5);
+            gbc_txtCityxytxt.fill = GridBagConstraints.HORIZONTAL;
+            gbc_txtCityxytxt.gridx = 1;
+            gbc_txtCityxytxt.gridy = 3;
+            contentPane.add(txtCityxytxt, gbc_txtCityxytxt);
+            txtCityxytxt.setColumns(10);
+        
+            txtCitypairstxt = new JTextField();
+            txtCitypairstxt.setText("citypairs.txt");
+            GridBagConstraints gbc_txtCitypairstxt = new GridBagConstraints();
+            gbc_txtCitypairstxt.gridwidth = 2;
+            gbc_txtCitypairstxt.insets = new Insets(0, 0, 5, 5);
+            gbc_txtCitypairstxt.fill = GridBagConstraints.HORIZONTAL;
+            gbc_txtCitypairstxt.gridx = 3;
+            gbc_txtCitypairstxt.gridy = 3;
+            contentPane.add(txtCitypairstxt, gbc_txtCitypairstxt);
+            txtCitypairstxt.setColumns(10);
+        
+            JButton btnReloadGraph = new JButton("Load / Reset");
+            GridBagConstraints gbc_btnReloadGraph = new GridBagConstraints();
+            gbc_btnReloadGraph.fill = GridBagConstraints.HORIZONTAL;
+            gbc_btnReloadGraph.insets = new Insets(0, 0, 5, 0);
+            gbc_btnReloadGraph.gridx = 5;
+            gbc_btnReloadGraph.gridy = 3;
+            contentPane.add(btnReloadGraph, gbc_btnReloadGraph);
+            
+                btnReloadGraph.addMouseListener(new MouseAdapter() {
+                  @Override
+                  public void mouseReleased(MouseEvent e) {
+                    // update JPanel
+                    updateGraphPanel();
+                  }
+                });
+        
+        JLabel lblEuclideanCosts = new JLabel("Euclidean Costs");
+        GridBagConstraints gbc_lblEuclideanCosts = new GridBagConstraints();
+        gbc_lblEuclideanCosts.anchor = GridBagConstraints.EAST;
+        gbc_lblEuclideanCosts.insets = new Insets(0, 0, 5, 5);
+        gbc_lblEuclideanCosts.gridx = 0;
+        gbc_lblEuclideanCosts.gridy = 4;
+        contentPane.add(lblEuclideanCosts, gbc_lblEuclideanCosts);
+        chckbxShowEdgeWeights.setSelected(true);
+        GridBagConstraints gbc_chckbxShowEdgeWeights = new GridBagConstraints();
+        gbc_chckbxShowEdgeWeights.anchor = GridBagConstraints.EAST;
+        gbc_chckbxShowEdgeWeights.gridwidth = 4;
+        gbc_chckbxShowEdgeWeights.insets = new Insets(0, 0, 5, 5);
+        gbc_chckbxShowEdgeWeights.gridx = 1;
+        gbc_chckbxShowEdgeWeights.gridy = 4;
+        contentPane.add(chckbxShowEdgeWeights, gbc_chckbxShowEdgeWeights);
+    
+    JButton btnComputeAllEuclidean = new JButton("Compute All Euclidean Costs");
+    GridBagConstraints gbc_btnComputeAllEuclidean = new GridBagConstraints();
+    gbc_btnComputeAllEuclidean.fill = GridBagConstraints.BOTH;
+    gbc_btnComputeAllEuclidean.insets = new Insets(0, 0, 5, 0);
+    gbc_btnComputeAllEuclidean.gridx = 5;
+    gbc_btnComputeAllEuclidean.gridy = 4;
+    contentPane.add(btnComputeAllEuclidean, gbc_btnComputeAllEuclidean);
+    
+    btnComputeAllEuclidean.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        panel.graph.computeAllEuclideanCosts();
+        repaint();
+      }
+    });
 
     JLabel lblGetUnweightedShortest = new JLabel("Get Unweighted Shortest Path");
     GridBagConstraints gbc_lblGetUnweightedShortest = new GridBagConstraints();
     gbc_lblGetUnweightedShortest.anchor = GridBagConstraints.EAST;
     gbc_lblGetUnweightedShortest.insets = new Insets(0, 0, 5, 5);
     gbc_lblGetUnweightedShortest.gridx = 0;
-    gbc_lblGetUnweightedShortest.gridy = 3;
+    gbc_lblGetUnweightedShortest.gridy = 5;
     contentPane.add(lblGetUnweightedShortest, gbc_lblGetUnweightedShortest);
 
     JLabel lblStart = new JLabel("Start");
@@ -191,7 +243,7 @@ public class Display extends JFrame {
     gbc_lblStart.insets = new Insets(0, 0, 5, 5);
     gbc_lblStart.anchor = GridBagConstraints.EAST;
     gbc_lblStart.gridx = 1;
-    gbc_lblStart.gridy = 3;
+    gbc_lblStart.gridy = 5;
     contentPane.add(lblStart, gbc_lblStart);
 
     unweightedStartCityComboBox = new JComboBox<>();
@@ -200,7 +252,7 @@ public class Display extends JFrame {
     gbc_unweightedStartCityComboBox.insets = new Insets(0, 0, 5, 5);
     gbc_unweightedStartCityComboBox.fill = GridBagConstraints.HORIZONTAL;
     gbc_unweightedStartCityComboBox.gridx = 2;
-    gbc_unweightedStartCityComboBox.gridy = 3;
+    gbc_unweightedStartCityComboBox.gridy = 5;
     contentPane.add(unweightedStartCityComboBox, gbc_unweightedStartCityComboBox);
 
     JLabel lblEnd = new JLabel("End");
@@ -208,7 +260,7 @@ public class Display extends JFrame {
     gbc_lblEnd.insets = new Insets(0, 0, 5, 5);
     gbc_lblEnd.anchor = GridBagConstraints.EAST;
     gbc_lblEnd.gridx = 3;
-    gbc_lblEnd.gridy = 3;
+    gbc_lblEnd.gridy = 5;
     contentPane.add(lblEnd, gbc_lblEnd);
 
     unweightedEndCityComboBox = new JComboBox<>();
@@ -216,7 +268,7 @@ public class Display extends JFrame {
     gbc_unweightedEndCityComboBox.insets = new Insets(0, 0, 5, 5);
     gbc_unweightedEndCityComboBox.fill = GridBagConstraints.HORIZONTAL;
     gbc_unweightedEndCityComboBox.gridx = 4;
-    gbc_unweightedEndCityComboBox.gridy = 3;
+    gbc_unweightedEndCityComboBox.gridy = 5;
     contentPane.add(unweightedEndCityComboBox, gbc_unweightedEndCityComboBox);
 
     JButton btnDrawUnweightedShortest = new JButton("Draw Unweighted");
@@ -225,7 +277,7 @@ public class Display extends JFrame {
     gbc_btnDrawUnweightedShortest.fill = GridBagConstraints.HORIZONTAL;
     gbc_btnDrawUnweightedShortest.insets = new Insets(0, 0, 5, 0);
     gbc_btnDrawUnweightedShortest.gridx = 5;
-    gbc_btnDrawUnweightedShortest.gridy = 3;
+    gbc_btnDrawUnweightedShortest.gridy = 5;
     contentPane.add(btnDrawUnweightedShortest, gbc_btnDrawUnweightedShortest);
 
     JLabel lblGetWeightedShortest_1 = new JLabel("Get Weighted Shortest Path");
@@ -233,7 +285,7 @@ public class Display extends JFrame {
     gbc_lblGetWeightedShortest_1.anchor = GridBagConstraints.EAST;
     gbc_lblGetWeightedShortest_1.insets = new Insets(0, 0, 5, 5);
     gbc_lblGetWeightedShortest_1.gridx = 0;
-    gbc_lblGetWeightedShortest_1.gridy = 4;
+    gbc_lblGetWeightedShortest_1.gridy = 6;
     contentPane.add(lblGetWeightedShortest_1, gbc_lblGetWeightedShortest_1);
 
     JLabel lblStart_1 = new JLabel("Start");
@@ -241,7 +293,7 @@ public class Display extends JFrame {
     gbc_lblStart_1.insets = new Insets(0, 0, 5, 5);
     gbc_lblStart_1.anchor = GridBagConstraints.EAST;
     gbc_lblStart_1.gridx = 1;
-    gbc_lblStart_1.gridy = 4;
+    gbc_lblStart_1.gridy = 6;
     contentPane.add(lblStart_1, gbc_lblStart_1);
 
     weightedStartCityComboBox = new JComboBox<>();
@@ -250,7 +302,7 @@ public class Display extends JFrame {
     gbc_weightedStartCityComboBox.insets = new Insets(0, 0, 5, 5);
     gbc_weightedStartCityComboBox.fill = GridBagConstraints.HORIZONTAL;
     gbc_weightedStartCityComboBox.gridx = 2;
-    gbc_weightedStartCityComboBox.gridy = 4;
+    gbc_weightedStartCityComboBox.gridy = 6;
     contentPane.add(weightedStartCityComboBox, gbc_weightedStartCityComboBox);
 
     JLabel lblEnd_1 = new JLabel("End");
@@ -258,7 +310,7 @@ public class Display extends JFrame {
     gbc_lblEnd_1.insets = new Insets(0, 0, 5, 5);
     gbc_lblEnd_1.anchor = GridBagConstraints.EAST;
     gbc_lblEnd_1.gridx = 3;
-    gbc_lblEnd_1.gridy = 4;
+    gbc_lblEnd_1.gridy = 6;
     contentPane.add(lblEnd_1, gbc_lblEnd_1);
 
     weightedEndCityComboBox = new JComboBox<>();
@@ -266,7 +318,7 @@ public class Display extends JFrame {
     gbc_weightedEndCityComboBox.insets = new Insets(0, 0, 5, 5);
     gbc_weightedEndCityComboBox.fill = GridBagConstraints.HORIZONTAL;
     gbc_weightedEndCityComboBox.gridx = 4;
-    gbc_weightedEndCityComboBox.gridy = 4;
+    gbc_weightedEndCityComboBox.gridy = 6;
     contentPane.add(weightedEndCityComboBox, gbc_weightedEndCityComboBox);
 
     JButton btnDrawWeightedShortest = new JButton("Draw Weighted");
@@ -275,7 +327,7 @@ public class Display extends JFrame {
     gbc_btnDrawWeightedShortest.fill = GridBagConstraints.HORIZONTAL;
     gbc_btnDrawWeightedShortest.insets = new Insets(0, 0, 5, 0);
     gbc_btnDrawWeightedShortest.gridx = 5;
-    gbc_btnDrawWeightedShortest.gridy = 4;
+    gbc_btnDrawWeightedShortest.gridy = 6;
     contentPane.add(btnDrawWeightedShortest, gbc_btnDrawWeightedShortest);
 
     JLabel lblGetMinimumSpanning = new JLabel("Get Minimum Spanning Tree");
@@ -283,7 +335,7 @@ public class Display extends JFrame {
     gbc_lblGetMinimumSpanning.anchor = GridBagConstraints.EAST;
     gbc_lblGetMinimumSpanning.insets = new Insets(0, 0, 5, 5);
     gbc_lblGetMinimumSpanning.gridx = 0;
-    gbc_lblGetMinimumSpanning.gridy = 5;
+    gbc_lblGetMinimumSpanning.gridy = 7;
     contentPane.add(lblGetMinimumSpanning, gbc_lblGetMinimumSpanning);
 
     mstCityTextField = new JTextField();
@@ -292,7 +344,7 @@ public class Display extends JFrame {
     gbc_mstCityTextField.insets = new Insets(0, 0, 5, 5);
     gbc_mstCityTextField.fill = GridBagConstraints.HORIZONTAL;
     gbc_mstCityTextField.gridx = 1;
-    gbc_mstCityTextField.gridy = 5;
+    gbc_mstCityTextField.gridy = 7;
     contentPane.add(mstCityTextField, gbc_mstCityTextField);
     mstCityTextField.setColumns(10);
 
@@ -302,7 +354,7 @@ public class Display extends JFrame {
     gbc_btnDrawMst.fill = GridBagConstraints.HORIZONTAL;
     gbc_btnDrawMst.insets = new Insets(0, 0, 5, 0);
     gbc_btnDrawMst.gridx = 5;
-    gbc_btnDrawMst.gridy = 5;
+    gbc_btnDrawMst.gridy = 7;
     contentPane.add(btnDrawMst, gbc_btnDrawMst);
 
     JLabel lblPanda = new JLabel("Panda 2016 <http://linanqiu.github.io/>");
@@ -321,31 +373,23 @@ public class Display extends JFrame {
         }
       }
     });
-    
+
     JSeparator separator_1 = new JSeparator();
     separator_1.setForeground(Color.GRAY);
     separator_1.setBackground(Color.WHITE);
     GridBagConstraints gbc_separator_1 = new GridBagConstraints();
     gbc_separator_1.fill = GridBagConstraints.BOTH;
     gbc_separator_1.gridwidth = 6;
-    gbc_separator_1.insets = new Insets(0, 0, 5, 5);
+    gbc_separator_1.insets = new Insets(0, 0, 5, 0);
     gbc_separator_1.gridx = 0;
-    gbc_separator_1.gridy = 6;
+    gbc_separator_1.gridy = 8;
     contentPane.add(separator_1, gbc_separator_1);
     GridBagConstraints gbc_lblPanda = new GridBagConstraints();
     gbc_lblPanda.gridwidth = 3;
     gbc_lblPanda.anchor = GridBagConstraints.EAST;
     gbc_lblPanda.gridx = 3;
-    gbc_lblPanda.gridy = 7;
+    gbc_lblPanda.gridy = 9;
     contentPane.add(lblPanda, gbc_lblPanda);
-
-    btnReloadGraph.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        // update JPanel
-        updateGraphPanel();
-      }
-    });
 
     btnDrawUnweightedShortest.addMouseListener(new MouseAdapter() {
       @Override
@@ -470,8 +514,8 @@ public class Display extends JFrame {
 
     public void paintGraph(Graphics g) {
       for (Vertex v : graph.getVertices()) {
-        for (Edge e : v.adjacentEdges) {
-          paintEdge(g, e.v1, e.v2, Color.LIGHT_GRAY, DEFAULT_THICKNESS, 255);
+        for (Edge edge : v.adjacentEdges) {
+          paintEdge(g, edge.source, edge.target, edge.weight, Color.LIGHT_GRAY, DEFAULT_THICKNESS, 255);
         }
       }
       for (Vertex v : graph.getVertices()) {
@@ -480,17 +524,17 @@ public class Display extends JFrame {
       for (String overlayType : overlayEdges.keySet()) {
         if (overlayType.equals("unweighted")) {
           for (Edge edge : overlayEdges.get(overlayType)) {
-            paintEdge(g, edge.v1, edge.v2, Color.RED, 8, 50);
+            paintEdge(g, edge.source, edge.target, edge.weight, Color.RED, 8, 50);
           }
         }
         if (overlayType.equals("weighted")) {
           for (Edge edge : overlayEdges.get(overlayType)) {
-            paintEdge(g, edge.v1, edge.v2, Color.GREEN, 8, 50);
+            paintEdge(g, edge.source, edge.target, edge.weight, Color.GREEN, 8, 50);
           }
         }
         if (overlayType.equals("mst")) {
           for (Edge edge : overlayEdges.get(overlayType)) {
-            paintEdge(g, edge.v1, edge.v2, Color.BLUE, 8, 50);
+            paintEdge(g, edge.source, edge.target, edge.weight, Color.BLUE, 8, 50);
           }
         }
       }
@@ -508,13 +552,13 @@ public class Display extends JFrame {
       g2.setStroke(oldStroke);
       g2.setColor(Color.LIGHT_GRAY);
       g2.fillOval(x - VERTEX_RADIUS / 2, y - VERTEX_RADIUS / 2, VERTEX_RADIUS, VERTEX_RADIUS);
-      g2.setColor(Color.BLACK);
+      g2.setColor(Color.DARK_GRAY);
       g2.drawString(v.name, x - v.name.length() * 8 / 2, y + VERTEX_RADIUS / 2);
     }
 
-    public void paintEdge(Graphics g, Vertex u, Vertex v, Color color, int thickness, int alpha) {
+    public void paintEdge(Graphics g, Vertex u, Vertex v, double weight, Color color, int thickness,
+        int alpha) {
       Graphics2D g2 = (Graphics2D) g;
-
       int x1 = Math.round(xFactor * (float) u.x + (float) MARGIN_X);
       int y1 = Math.round(yFactor * (float) u.y + (float) MARGIN_Y);
       int x2 = Math.round(xFactor * (float) v.x + (float) MARGIN_X);
@@ -524,6 +568,13 @@ public class Display extends JFrame {
       g2.setStroke(new BasicStroke(thickness));
       g2.drawLine(x1, y1, x2, y2);
       g2.setStroke(oldStroke);
+      if (chckbxShowEdgeWeights.isSelected()) {
+        Font oldFont = g2.getFont();
+        g2.setFont(new Font("Helvetica", Font.PLAIN, 8));
+        g2.setColor(Color.GRAY);
+        g2.drawString(String.format("%.1f", weight), (x1 + x2) / 2, (y1 + y2) / 2);
+        g2.setFont(oldFont);
+      }
     }
   }
 }

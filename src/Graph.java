@@ -42,10 +42,6 @@ public class Graph {
     sourceVertex.addEdge(newEdge);
   }
 
-  /****************************
-   * Your code follow here. *
-   ****************************/
-
   public void addUndirectedEdge(String s, String t, double cost) {
     addEdge(s, t, cost);
     addEdge(t, s, cost);
@@ -58,10 +54,14 @@ public class Graph {
   public void computeAllEuclideanCosts() {
     for (Vertex u : getVertices())
       for (Edge uv : u.adjacentEdges) {
-        Vertex v = uv.v2;
+        Vertex v = uv.target;
         uv.weight = computeEuclideanCost(u.x, u.y, v.x, v.y);
       }
   }
+
+  /****************************
+   * Your code follow here. *
+   ****************************/
 
   /** BFS */
   public void doBfs(String s) {
@@ -69,7 +69,7 @@ public class Graph {
     for (Vertex u : getVertices()) {
       u.known = false;
       u.dist = Double.POSITIVE_INFINITY;
-      u.prevVertex = null;
+      u.prev = null;
     }
 
     Vertex v;
@@ -80,9 +80,9 @@ public class Graph {
     while (!queue.isEmpty()) {
       u = queue.poll();
       for (Edge uv : u.adjacentEdges) {
-        v = uv.v2;
+        v = uv.target;
         if (!v.known) {
-          v.prevVertex = u;
+          v.prev = u;
           v.dist = u.dist + 1.0;
           v.known = true;
           queue.offer(v);
@@ -97,9 +97,9 @@ public class Graph {
 
     Vertex v = vertexNames.get(t);
     // Follow backpointers and insert new edges
-    while (v.prevVertex != null) {
-      result.add(new Edge(v.prevVertex, v, 0.0));
-      v = v.prevVertex;
+    while (v.prev != null) {
+      result.add(new Edge(v.prev, v, 0.0));
+      v = v.prev;
     }
     return result;
   }
@@ -110,7 +110,7 @@ public class Graph {
     for (Vertex u : getVertices()) {
       u.known = false;
       u.dist = Double.POSITIVE_INFINITY;
-      u.prevVertex = null;
+      u.prev = null;
     }
 
     Vertex v;
@@ -125,9 +125,9 @@ public class Graph {
       u = next.vertex;
       u.known = true;
       for (Edge uv : u.adjacentEdges) {
-        v = uv.v2;
+        v = uv.target;
         if (!v.known && (u.dist + uv.weight < v.dist)) {
-          v.prevVertex = u;
+          v.prev = u;
           v.dist = uv.weight + u.dist;
           queue.offer(new CostVertex(v.dist, v));
         }
@@ -143,9 +143,9 @@ public class Graph {
     Vertex v = vertexNames.get(t);
 
     // Follow backpointers and insert new edges
-    while (v.prevVertex != null) {
-      result.add(new Edge(v.prevVertex, v, 1.0));
-      v = v.prevVertex;
+    while (v.prev != null) {
+      result.add(new Edge(v.prev, v, computeEuclideanCost(v.prev.x, v.prev.y, v.x, v.y)));
+      v = v.prev;
     }
     return result;
   }
@@ -156,7 +156,7 @@ public class Graph {
     for (Vertex u : getVertices()) {
       u.known = false;
       u.dist = Double.POSITIVE_INFINITY;
-      u.prevVertex = null;
+      u.prev = null;
     }
 
     Vertex v;
@@ -171,9 +171,9 @@ public class Graph {
       u = next.vertex;
       u.known = true;
       for (Edge uv : u.adjacentEdges) {
-        v = uv.v2;
+        v = uv.target;
         if (!v.known && (uv.weight < v.dist)) {
-          v.prevVertex = u;
+          v.prev = u;
           v.dist = uv.weight;
           queue.offer(new CostVertex(v.dist, v));
         }
@@ -187,8 +187,8 @@ public class Graph {
     List<Edge> result = new LinkedList<>();
 
     for (Vertex v : getVertices()) {
-      if (v.prevVertex != null)
-        result.add(new Edge(v, v.prevVertex, 1.0));
+      if (v.prev != null)
+        result.add(new Edge(v, v.prev, 1.0));
     }
 
     return result;
@@ -202,7 +202,7 @@ public class Graph {
       sb.append(u);
       sb.append(" -> [ ");
       for (Edge e : vertexNames.get(u).adjacentEdges) {
-        sb.append(e.v2.name);
+        sb.append(e.target.name);
         sb.append("(");
         sb.append(e.weight);
         sb.append(") ");
@@ -222,11 +222,7 @@ public class Graph {
     }
 
     public int compareTo(CostVertex o) {
-      if (o.cost > this.cost)
-        return -1;
-      if (o.cost < this.cost)
-        return 1;
-      return 0;
+      return Double.compare(cost, o.cost);
     }
   }
 }

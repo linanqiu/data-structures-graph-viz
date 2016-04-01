@@ -1,14 +1,15 @@
 import java.util.LinkedList;
+import java.util.List;
 
-public class Vertex implements Comparable<Vertex> {
+public class Vertex {
 
   public String name;
   public int x;
   public int y;
   public boolean known;
   public double dist; // total distance from origin point
-  public Vertex prevVertex;
-  public LinkedList<Edge> adjacentEdges;
+  public Vertex prev;
+  public List<Edge> adjacentEdges;
 
   public Vertex(String name, int x, int y) {
     this.name = name;
@@ -17,12 +18,7 @@ public class Vertex implements Comparable<Vertex> {
     // by default java sets uninitialized boolean to false and double to 0
     // hence known == false and dist == 0.0
     adjacentEdges = new LinkedList<Edge>();
-    prevVertex = null;
-  }
-
-  @Override
-  public int compareTo(Vertex v) {
-    return Double.compare(dist, v.dist);
+    prev = null;
   }
 
   @Override
