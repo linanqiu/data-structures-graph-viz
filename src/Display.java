@@ -1,5 +1,6 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,6 +14,8 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
 public class Display extends JFrame {
@@ -283,10 +287,26 @@ public class Display extends JFrame {
     gbc_btnDrawMst.gridy = 6;
     contentPane.add(btnDrawMst, gbc_btnDrawMst);
 
-    JLabel lblPanda = new JLabel("Panda 2016");
+    JLabel lblPanda = new JLabel("Panda 2016 http://linanqiu.github.io/");
+    lblPanda.setForeground(UIManager.getColor("TextField.light"));
+    lblPanda.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        try {
+          Desktop.getDesktop().browse(new URI("http://linanqiu.github.io/"));
+        } catch (IOException e1) {
+          // TODO Auto-generated catch block
+          e1.printStackTrace();
+        } catch (URISyntaxException e1) {
+          // TODO Auto-generated catch block
+          e1.printStackTrace();
+        }
+      }
+    });
     GridBagConstraints gbc_lblPanda = new GridBagConstraints();
+    gbc_lblPanda.gridwidth = 2;
     gbc_lblPanda.anchor = GridBagConstraints.EAST;
-    gbc_lblPanda.gridx = 3;
+    gbc_lblPanda.gridx = 2;
     gbc_lblPanda.gridy = 7;
     contentPane.add(lblPanda, gbc_lblPanda);
 
