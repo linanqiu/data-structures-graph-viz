@@ -1,29 +1,36 @@
-Boston 2542  1230
-Chicago 1756  1048
-Omaha  1350  990
-SaltLake  565  1025
-Peoria  1676  962
-NewYork 2435  1081
-Pittsburgh  2135  982
-Denver  905  908
-Washington 2312  927
-St.Louis  1645  817
-SanFrancisco  0  945
-Tulsa  1410  686
-LasVegas  338  746
-Albuquerque 780  597
-Memphis  1674  573
-LosAngeles  138  644
-Seattle 100 1400
-Atlanta  1985  510
-Phoenix  470  532
-Dallas  1308  402
-NewOrleans  1701  225
-Miami  2309  0
-Boise 400 1225
-Raleigh 2200 678
-Indianapois 1806 980
-Louisville 1837 798
-Cleveland 2050 1025
-Reno 120 990
-Minneapolis 1500 1200
+Vancouver,80,78
+Calgary,180,67
+Winnipeg,360,75
+Montreal,696,66
+SaultSaintMarie,550,120
+Seattle,76,123
+Toronto,630,130
+Boston,750,110
+Portland,60,164
+Helena,260,170
+Duluth,440,166
+NewYork,700,165
+SaltLakeCity,200,270
+Denver,300,290
+Omaha,420,240
+Chicago,540,215
+Pittsburgh,640,200
+Washington,716,240
+SanFrancisco,50,315
+KansasCity,435,280
+SaintLouis,500,300
+Raleigh,700,285
+OklahomaCity,420,340
+LittleRock,490,360
+Nashville,580,330
+LasVegas,160,350
+SantaFe,300,360
+Atlanta,640,360
+Charleston,700,380
+LosAngeles,111,395
+Phoenix,220,390
+ElPaso,300,425
+Dallas,440,415
+Houston,470,450
+NewOrleans,550,440
+Miami,700,460

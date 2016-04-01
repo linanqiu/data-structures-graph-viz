@@ -1,37 +1,67 @@
-Peoria Chicago 117.45637488020819
-St.Louis Peoria 148.2767682410161
-NewYork Boston 183.43936327844142
-Washington Pittsburgh 185.34832073693033
-Washington NewYork 197.0913493789111
-LosAngeles LasVegas 224.50835173774718
-Memphis St.Louis 245.7173172570464
-Tulsa St.Louis 269.04646438858845
-Memphis Tulsa 287.1671986839723
-Dallas Tulsa 301.7614952242913
-Pittsburgh NewYork 315.91296269700615
-Phoenix Albuquerque 316.7412192942371
-Atlanta Memphis 317.3168763239674
-Peoria Omaha 327.2002444986862
-LosAngeles SanFrancisco 331.1268639056638
-Phoenix LosAngeles 350.3826479721848
-Denver SaltLake 359.56779611083084
-LasVegas SaltLake 359.6804137008297
-Pittsburgh Chicago 384.7037821493311
-LasVegas SanFrancisco 392.23079940259663
-NewOrleans Atlanta 402.3443798538759
-Dallas Memphis 403.97648446413314
-Omaha Chicago 410.1219330881976
-NewOrleans Dallas 431.01972112653965
-Denver Omaha 452.49198887936126
-Albuquerque LasVegas 466.43863476345956
-Atlanta Washington 529.9226358630098
-Tulsa Denver 551.6420941153784
-Dallas Albuquerque 562.8578861488928
-SanFrancisco SaltLake 570.6356105256664
-LasVegas Denver 589.688901031722
-Miami Atlanta 604.2151934534583
-Albuquerque Tulsa 636.2554518430471
-Miami NewOrleans 648.2969998388085
-St.Louis Washington 676.009615316232
-Dallas Atlanta 685.5603547463928
-Chicago Boston 806.7961328613319
+Vancouver,Calgary,100
+Vancouver,Seattle,100
+Calgary,Winnipeg,100
+Calgary,Helena,100
+Calgary,Seattle,100
+Winnipeg,Helena,100
+Winnipeg,Duluth,100
+Winnipeg,SaultSaintMarie,100
+SaultSaintMarie,Duluth,100
+SaultSaintMarie,Toronto,100
+SaultSaintMarie,Montreal,100
+Toronto,Montreal,100
+Toronto,Pittsburgh,100
+Montreal,Boston,100
+Montreal,NewYork,100
+Seattle,Helena,100
+Seattle,Portland,100
+Helena,Duluth,100
+Helena,SaltLakeCity,100
+Helena,Denver,100
+Helena,Omaha,100
+Duluth,Omaha,100
+Duluth,Chicago,100
+Chicago,Pittsburgh,100
+Chicago,SaintLouis,100
+Chicago,Omaha,100
+Pittsburgh,NewYork,100
+Pittsburgh,Washington,100
+NewYork,Washington,100
+NewYork,Boston,100
+Portland,SanFrancisco,100
+Portland,SaltLakeCity,100
+SanFrancisco,SaltLakeCity,100
+SanFrancisco,LosAngeles,100
+LosAngeles,LasVegas,100
+LosAngeles,Phoenix,100
+SaltLakeCity,Denver,100
+SaltLakeCity,LasVegas,100
+Denver,SantaFe,100
+Denver,Phoenix,100
+Denver,Omaha,100
+Denver,KansasCity,100
+KansasCity,SaintLouis,100
+KansasCity,OklahomaCity,100
+SaintLouis,Nashville,100
+Nashville,Raleigh,100
+Nashville,Atlanta,100
+Washington,Raleigh,100
+Raleigh,Atlanta,100
+Raleigh,Charleston,100
+Atlanta,Miami,100
+Atlanta,NewOrleans,100
+Charleston,Miami,100
+Miami,NewOrleans,100
+NewOrleans,LittleRock,100
+NewOrleans,Houston,100
+Houston,Dallas,100
+Dallas,LittleRock,100
+Dallas,ElPaso,100
+ElPaso,LosAngeles,100
+ElPaso,SantaFe,100
+Atlanta,Charleston,100
+SantaFe,OklahomaCity,100
+SantaFe,Phoenix,100
+LittleRock,Nashville,100
+LittleRock,OklahomaCity,100
+LittleRock,SaintLouis,100

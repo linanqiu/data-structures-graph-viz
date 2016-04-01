@@ -1,91 +1,58 @@
-
-/*
- * Vertex class implements functionality of a vertex component of a graph.
- * the class contains instance variables and methods associated with this 
- * component.
- * 
- * written by Sasha Beltinova, sab2229
- */
-
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Vertex implements Comparable<Vertex> {
 
-  private String name;
-  private int x;
-  private int y;
-  private boolean isKnown;
-  private double dist; // total distance from origin point
-  private Vertex prevVertex;
-  private ArrayList<Edge> adjCities;
+  public String name;
+  public int x;
+  public int y;
+  public boolean known;
+  public double dist; // total distance from origin point
+  public Vertex prevVertex;
+  public LinkedList<Edge> adjacentEdges;
 
   public Vertex(String name, int x, int y) {
-
     this.name = name;
     this.x = x;
     this.y = y;
-    adjCities = new ArrayList<Edge>();
+    // by default java sets uninitialized boolean to false and double to 0
+    // hence known == false and dist == 0.0
+    adjacentEdges = new LinkedList<Edge>();
     prevVertex = null;
-
   }
 
-  public void setKnown(boolean known) {
-    isKnown = known;
+  @Override
+  public int compareTo(Vertex v) {
+    return Double.compare(dist, v.dist);
   }
 
-  public void setDist(double totalDist) {
-    dist = totalDist;
+  @Override
+  public int hashCode() {
+    // we assume that each vertex has a unique name
+    return name.hashCode();
   }
 
-  public void setPrevVert(Vertex v) {
-    prevVertex = v;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null) {
+      return false;
+    }
+    if (!(o instanceof Vertex)) {
+      return false;
+    }
+    Vertex oVertex = (Vertex) o;
+
+    return name.equals(oVertex.name) && x == oVertex.x && y == oVertex.y;
   }
 
   public void addEdge(Edge edge) {
-    adjCities.add(edge);
-  }
-
-  public String getCityName() {
-    return name;
-  }
-
-  public int getX() {
-    return x;
-  }
-
-  public int getY() {
-    return y;
-  }
-
-  public boolean isKnown() {
-    return isKnown;
-  }
-
-  public double getDist() {
-    return dist;
-  }
-
-  public Vertex getPrevVert() {
-    return prevVertex;
-  }
-
-  public ArrayList<Edge> getAdjacent() {
-    return adjCities;
-  }
-
-  public int compareTo(Vertex v) {
-    if (this.dist < v.dist) {
-      return -1;
-    } else if (this.dist > v.dist) {
-      return 1;
-    }
-
-    else {
-      return 0;
-    }
+    adjacentEdges.add(edge);
   }
 
   public String toString() {
-    return name;
+    return name + " (" + x + ", " + y + ")";
   }
+
 }
