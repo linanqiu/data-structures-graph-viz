@@ -8,3 +8,9 @@ Then, just `java Display`
 
 There's no need to use command line arguments. Instead, the file is read from
 the GUI.
+
+![Screenshot 1](screenshots/ss_1.png)
+
+![Screenshot 2](screenshots/ss_2.png)
+
+![Screenshot 3](screenshots/ss_3.png)
