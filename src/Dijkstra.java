@@ -5,25 +5,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class Graph {
+public class Dijkstra {
 
   // Keep a fast index to nodes in the map
   private Map<String, Vertex> vertexNames;
 
   /**
-   * Construct an empty Graph with a map. The map's key is the name of a vertex
+   * Construct an empty Dijkstra with a map. The map's key is the name of a vertex
    * and the map's value is the vertex object.
    */
-  public Graph() {
+  public Dijkstra() {
     vertexNames = new HashMap<String, Vertex>();
   }
 
   /**
-   * Adds a vertex to the graph. Throws IllegalArgumentException if two vertices
+   * Adds a vertex to the dijkstra. Throws IllegalArgumentException if two vertices
    * with the same name are added.
    * 
    * @param v
-   *          (Vertex) vertex to be added to the graph
+   *          (Vertex) vertex to be added to the dijkstra
    */
   public void addVertex(Vertex v) {
     if (vertexNames.containsKey(v.name))
@@ -32,9 +32,9 @@ public class Graph {
   }
 
   /**
-   * Gets a collection of all the vertices in the graph
+   * Gets a collection of all the vertices in the dijkstra
    * 
-   * @return (Collection<Vertex>) collection of all the vertices in the graph
+   * @return (Collection<Vertex>) collection of all the vertices in the dijkstra
    */
   public Collection<Vertex> getVertices() {
     return vertexNames.values();
@@ -203,7 +203,7 @@ public class Graph {
   // STUDENT CODE ENDS HERE
 
   /**
-   * Prints out the adjacency list of the graph for debugging
+   * Prints out the adjacency list of the dijkstra for debugging
    */
   public void printAdjacencyList() {
     for (String u : vertexNames.keySet()) {

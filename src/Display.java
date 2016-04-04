@@ -45,7 +45,7 @@ public class Display extends JFrame {
   private GraphPanel panel;
   private JComboBox<String> weightedStartCityComboBox;
   private JComboBox<String> weightedEndCityComboBox;
-  private Graph graph;
+  private Dijkstra dijkstra;
   private JCheckBox chckbxShowEdgeWeights;
 
   /**
@@ -64,9 +64,9 @@ public class Display extends JFrame {
     });
   }
 
-  public static Graph readGraph(String vertexFile, String edgeFile) {
+  public static Dijkstra readGraph(String vertexFile, String edgeFile) {
 
-    Graph graph = new Graph();
+    Dijkstra dijkstra = new Dijkstra();
     try {
       String line;
       // Read in the vertices
@@ -81,7 +81,7 @@ public class Display extends JFrame {
         int x = Integer.valueOf(parts[1]);
         int y = Integer.valueOf(parts[2]);
         Vertex vertex = new Vertex(cityname, x, y);
-        graph.addVertex(vertex);
+        dijkstra.addVertex(vertex);
       }
       vertexFileBr.close();
       // Now read in the edges
@@ -92,21 +92,21 @@ public class Display extends JFrame {
           edgeFileBr.close();
           throw new IOException("Invalid line in edge file " + line);
         }
-        graph.addUndirectedEdge(parts[0], parts[1], Double.parseDouble(parts[2]));
+        dijkstra.addUndirectedEdge(parts[0], parts[1], Double.parseDouble(parts[2]));
       }
       edgeFileBr.close();
     } catch (IOException e) {
-      System.err.println("Could not read the graph: " + e);
+      System.err.println("Could not read the dijkstra: " + e);
       return null;
     }
-    return graph;
+    return dijkstra;
   }
 
   /**
    * Create the frame.
    */
   public Display() {
-    setTitle("Data Structures Graph Visualizer");
+    setTitle("Data Structures Dijkstra Visualizer");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setBounds(50, 50, 900, 700);
     setMinimumSize(new Dimension(800, 600));
@@ -120,9 +120,9 @@ public class Display extends JFrame {
     gbl_contentPane.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
     contentPane.setLayout(gbl_contentPane);
 
-    graph = readGraph("cityxy.txt", "citypairs.txt");
+    dijkstra = readGraph("cityxy.txt", "citypairs.txt");
 
-    panel = new GraphPanel(graph);
+    panel = new GraphPanel(dijkstra);
     GridBagConstraints gbc_panel = new GridBagConstraints();
     gbc_panel.gridwidth = 7;
     gbc_panel.insets = new Insets(0, 0, 7, 0);
@@ -149,7 +149,7 @@ public class Display extends JFrame {
       }
     });
 
-    JLabel lblReloadGraph = new JLabel("Load / Reload Graph");
+    JLabel lblReloadGraph = new JLabel("Load / Reload Dijkstra");
     GridBagConstraints gbc_lblReloadGraph = new GridBagConstraints();
     gbc_lblReloadGraph.anchor = GridBagConstraints.EAST;
     gbc_lblReloadGraph.insets = new Insets(0, 0, 5, 5);
@@ -222,7 +222,7 @@ public class Display extends JFrame {
     btnComputeAllEuclidean.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent e) {
-        panel.graph.computeAllEuclideanDistances();
+        panel.dijkstra.computeAllEuclideanDistances();
         repaint();
       }
     });
@@ -317,7 +317,7 @@ public class Display extends JFrame {
         String startCity = weightedStartCityComboBox.getItemAt(weightedStartCityComboBox.getSelectedIndex());
         String endCity = weightedEndCityComboBox.getItemAt(weightedEndCityComboBox.getSelectedIndex());
         System.out.println("Calculating shortest weighted path for " + startCity + " to " + endCity);
-        List<Edge> weightedPath = graph.getDijkstraPath(startCity, endCity);
+        List<Edge> weightedPath = dijkstra.getDijkstraPath(startCity, endCity);
         panel.overlayEdges.put("weighted", weightedPath);
         repaint();
       }
@@ -329,12 +329,12 @@ public class Display extends JFrame {
   private void updateGraphPanel() {
     String vertexFile = txtCityxytxt.getText();
     String edgeFile = txtCitypairstxt.getText();
-    graph = readGraph(vertexFile, edgeFile);
-    panel.graph = graph;
+    dijkstra = readGraph(vertexFile, edgeFile);
+    panel.dijkstra = dijkstra;
     System.out.println("Constructing new file from " + vertexFile + " and " + edgeFile);
-    System.out.println("Data read: " + panel.graph.getVertices());
+    System.out.println("Data read: " + panel.dijkstra.getVertices());
 
-    String[] cityNames = graph.getVertices().parallelStream().map(v -> v.name).sorted().toArray(String[]::new);
+    String[] cityNames = dijkstra.getVertices().parallelStream().map(v -> v.name).sorted().toArray(String[]::new);
     weightedStartCityComboBox.setModel(new DefaultComboBoxModel<>(cityNames));
     weightedEndCityComboBox.setModel(new DefaultComboBoxModel<>(cityNames));
 
@@ -347,7 +347,7 @@ public class Display extends JFrame {
 
   public class GraphPanel extends JPanel {
 
-    // graph layout parameters
+    // dijkstra layout parameters
     public static final int VERTEX_RADIUS = 10;
     public static final int SPACE = 3;
 
@@ -359,12 +359,12 @@ public class Display extends JFrame {
     // scale factors
     public float xFactor, yFactor;
 
-    public Graph graph;
+    public Dijkstra dijkstra;
 
     public HashMap<String, List<Edge>> overlayEdges;
 
-    public GraphPanel(Graph graph) {
-      this.graph = graph;
+    public GraphPanel(Dijkstra dijkstra) {
+      this.dijkstra = dijkstra;
       overlayEdges = new HashMap<>();
       overlayEdges.put("weighted", new LinkedList<Edge>());
       overlayEdges.put("unweighted", new LinkedList<Edge>());
@@ -383,12 +383,12 @@ public class Display extends JFrame {
       g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
       g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 
-      // scale the graph
+      // scale the dijkstra
       int minX = 0;
       int maxX = 1;
       int minY = 0;
       int maxY = 1;
-      for (Vertex v : graph.getVertices()) {
+      for (Vertex v : dijkstra.getVertices()) {
         if (v.x < minX)
           minX = v.x;
         if (v.x > maxX)
@@ -401,16 +401,16 @@ public class Display extends JFrame {
       xFactor = (this.getBounds().width - 2 * MARGIN_X) / (float) (maxX - minX);
       yFactor = (this.getBounds().height - 2 * MARGIN_Y) / (float) (maxY - minY);
       super.paintComponent(g2); // paint the panel
-      paintGraph(g2); // paint the graph
+      paintGraph(g2); // paint the dijkstra
     }
 
     public void paintGraph(Graphics g) {
-      for (Vertex v : graph.getVertices()) {
+      for (Vertex v : dijkstra.getVertices()) {
         for (Edge edge : v.adjacentEdges) {
           paintEdge(g, edge.source, edge.target, edge.distance, Color.LIGHT_GRAY, DEFAULT_THICKNESS, 255);
         }
       }
-      for (Vertex v : graph.getVertices()) {
+      for (Vertex v : dijkstra.getVertices()) {
         paintVertex(g, v);
       }
       for (String overlayType : overlayEdges.keySet()) {
