@@ -11,26 +11,56 @@ public class Graph {
   private Map<String, Vertex> vertexNames;
 
   /**
-   * Construct an empty Graph.
+   * Construct an empty Graph with a map. The map's key is the name of a vertex
+   * and the map's value is the vertex object.
    */
   public Graph() {
     vertexNames = new HashMap<String, Vertex>();
   }
 
+  /**
+   * Adds a vertex to the graph. Throws IllegalArgumentException if two vertices
+   * with the same name are added.
+   * 
+   * @param v
+   *          (Vertex) vertex to be added to the graph
+   */
   public void addVertex(Vertex v) {
     if (vertexNames.containsKey(v.name))
       throw new IllegalArgumentException("Cannot create new vertex with existing name.");
     vertexNames.put(v.name, v);
   }
 
+  /**
+   * Gets a collection of all the vertices in the graph
+   * 
+   * @return (Collection<Vertex>) collection of all the vertices in the graph
+   */
   public Collection<Vertex> getVertices() {
     return vertexNames.values();
   }
 
-  public Vertex getVertex(String s) {
-    return vertexNames.get(s);
+  /**
+   * Gets the vertex object with the given name
+   * 
+   * @param name
+   *          (String) name of the vertex object requested
+   * @return (Vertex) vertex object associated with the name
+   */
+  public Vertex getVertex(String name) {
+    return vertexNames.get(name);
   }
 
+  /**
+   * Adds a directed edge from vertex u to vertex v
+   * 
+   * @param nameU
+   *          (String) name of vertex u
+   * @param nameV
+   *          (String) name of vertex v
+   * @param cost
+   *          (double) cost of the edge between vertex u and v
+   */
   public void addEdge(String nameU, String nameV, Double cost) {
     if (!vertexNames.containsKey(nameU))
       throw new IllegalArgumentException(nameU + " does not exist. Cannot create edge.");
@@ -42,81 +72,72 @@ public class Graph {
     sourceVertex.addEdge(newEdge);
   }
 
-  public void addUndirectedEdge(String s, String t, double cost) {
-    addEdge(s, t, cost);
-    addEdge(t, s, cost);
+  /**
+   * Adds an undirected edge between vertex u and vertex v by adding a directed
+   * edge from u to v, then a directed edge from v to u
+   * 
+   * @param nameU
+   *          (String) name of vertex u
+   * @param nameV
+   *          (String) name of vertex v
+   * @param cost
+   *          (double) cost of the edge between vertex u and v
+   */
+  public void addUndirectedEdge(String nameU, String nameV, double cost) {
+    addEdge(nameU, nameV, cost);
+    addEdge(nameV, nameU, cost);
   }
 
-  public double computeEuclideanCost(double ux, double uy, double vx, double vy) {
+  // STUDENT CODE STARTS HERE
+
+  /**
+   * Computes the euclidean distance between two points as described by their
+   * coordinates
+   * 
+   * @param ux
+   *          (double) x coordinate of point u
+   * @param uy
+   *          (double) y coordinate of point u
+   * @param vx
+   *          (double) x coordinate of point v
+   * @param vy
+   *          (double) y coordinate of point v
+   * @return (double) distance between the two points
+   */
+  public double computeEuclideanDistance(double ux, double uy, double vx, double vy) {
     return Math.sqrt(Math.pow(ux - vx, 2) + Math.pow(uy - vy, 2));
   }
 
-  public void computeAllEuclideanCosts() {
+  /**
+   * Calculates the euclidean distance for all edges in the map using the
+   * computeEuclideanCost method.
+   */
+  public void computeAllEuclideanDistances() {
     for (Vertex u : getVertices())
       for (Edge uv : u.adjacentEdges) {
         Vertex v = uv.target;
-        uv.weight = computeEuclideanCost(u.x, u.y, v.x, v.y);
+        uv.distance = computeEuclideanDistance(u.x, u.y, v.x, v.y);
       }
   }
 
-  /****************************
-   * Your code follow here. *
-   ****************************/
-
-  /** BFS */
-  public void doBfs(String s) {
-    LinkedList<Vertex> queue = new LinkedList<>();
-    for (Vertex u : getVertices()) {
-      u.known = false;
-      u.dist = Double.POSITIVE_INFINITY;
-      u.prev = null;
-    }
-
-    Vertex v;
-    Vertex u = vertexNames.get(s);
-    u.known = true;
-    queue.offer(u);
-
-    while (!queue.isEmpty()) {
-      u = queue.poll();
-      for (Edge uv : u.adjacentEdges) {
-        v = uv.target;
-        if (!v.known) {
-          v.prev = u;
-          v.dist = u.dist + 1.0;
-          v.known = true;
-          queue.offer(v);
-        }
-      }
-    }
-  }
-
-  public List<Edge> getUnweightedShortestPath(String s, String t) {
-    doBfs(s);
-    List<Edge> result = new LinkedList<>();
-
-    Vertex v = vertexNames.get(t);
-    // Follow backpointers and insert new edges
-    while (v.prev != null) {
-      result.add(new Edge(v.prev, v, 0.0));
-      v = v.prev;
-    }
-    return result;
-  }
-
-  /** Dijkstra's */
+  /**
+   * Dijkstra's Algorithm. Students fill in this.
+   * 
+   * @param s
+   *          (String) starting city name
+   */
   public void doDijkstra(String s) {
     PriorityQueue<CostVertex> queue = new PriorityQueue<>();
     for (Vertex u : getVertices()) {
       u.known = false;
-      u.dist = Double.POSITIVE_INFINITY;
+      u.distance = Double.POSITIVE_INFINITY;
       u.prev = null;
     }
 
     Vertex v;
     Vertex u = vertexNames.get(s);
     u.known = true;
-    u.dist = 0.0;
+    u.distance = 0.0;
     queue.offer(new CostVertex(0.0, u));
 
     CostVertex next;
@@ -126,92 +147,20 @@ public class Graph {
       u.known = true;
       for (Edge uv : u.adjacentEdges) {
         v = uv.target;
-        if (!v.known && (u.dist + uv.weight < v.dist)) {
+        if (!v.known && (u.distance + uv.distance < v.distance)) {
           v.prev = u;
-          v.dist = uv.weight + u.dist;
-          queue.offer(new CostVertex(v.dist, v));
+          v.distance = uv.distance + u.distance;
+          queue.offer(new CostVertex(v.distance, v));
         }
       }
     }
   }
 
-  public List<Edge> getWeightedShortestPath(String s, String t) {
-    doDijkstra(s);
-
-    List<Edge> result = new LinkedList<>();
-
-    Vertex v = vertexNames.get(t);
-
-    // Follow backpointers and insert new edges
-    while (v.prev != null) {
-      result.add(new Edge(v.prev, v, computeEuclideanCost(v.prev.x, v.prev.y, v.x, v.y)));
-      v = v.prev;
-    }
-    return result;
-  }
-
-  /** Prim's */
-  public void doPrim(String s) {
-    PriorityQueue<CostVertex> queue = new PriorityQueue<>();
-    for (Vertex u : getVertices()) {
-      u.known = false;
-      u.dist = Double.POSITIVE_INFINITY;
-      u.prev = null;
-    }
-
-    Vertex v;
-    Vertex u = vertexNames.get(s);
-    u.known = true;
-    u.dist = 0.0;
-    queue.offer(new CostVertex(0.0, u));
-
-    CostVertex next;
-    while (!queue.isEmpty()) {
-      next = queue.poll();
-      u = next.vertex;
-      u.known = true;
-      for (Edge uv : u.adjacentEdges) {
-        v = uv.target;
-        if (!v.known && (uv.weight < v.dist)) {
-          v.prev = u;
-          v.dist = uv.weight;
-          queue.offer(new CostVertex(v.dist, v));
-        }
-      }
-    }
-  }
-
-  public List<Edge> getMinimumSpanningTree(String s) {
-    doPrim(s);
-
-    List<Edge> result = new LinkedList<>();
-
-    for (Vertex v : getVertices()) {
-      if (v.prev != null)
-        result.add(new Edge(v, v.prev, 1.0));
-    }
-
-    return result;
-  }
-
-  /*************************/
-
-  public void printAdjacencyList() {
-    for (String u : vertexNames.keySet()) {
-      StringBuilder sb = new StringBuilder();
-      sb.append(u);
-      sb.append(" -> [ ");
-      for (Edge e : vertexNames.get(u).adjacentEdges) {
-        sb.append(e.target.name);
-        sb.append("(");
-        sb.append(e.weight);
-        sb.append(") ");
-      }
-      sb.append("]");
-      System.out.println(sb.toString());
-    }
-  }
-
+  /**
+   * Helper class for Dijkstra
+   * 
+   * @author linanqiu
+   */
   private class CostVertex implements Comparable<CostVertex> {
     double cost;
     Vertex vertex;
@@ -223,6 +172,52 @@ public class Graph {
 
     public int compareTo(CostVertex o) {
       return Double.compare(cost, o.cost);
+    }
+  }
+
+  /**
+   * Returns a list of edges for a path from city s to city t. This will be the
+   * shortest path from s to t as prescribed by Dijkstra's algorithm
+   * 
+   * @param s
+   *          (String) starting city name
+   * @param t
+   *          (String) ending city name
+   * @return (List<Edge>) list of edges from s to t
+   */
+  public List<Edge> getDijkstraPath(String s, String t) {
+    doDijkstra(s);
+
+    List<Edge> result = new LinkedList<>();
+
+    Vertex v = vertexNames.get(t);
+
+    // Follow backpointers and insert new edges
+    while (v.prev != null) {
+      result.add(new Edge(v.prev, v, computeEuclideanDistance(v.prev.x, v.prev.y, v.x, v.y)));
+      v = v.prev;
+    }
+    return result;
+  }
+
+  // STUDENT CODE ENDS HERE
+
+  /**
+   * Prints out the adjacency list of the graph for debugging
+   */
+  public void printAdjacencyList() {
+    for (String u : vertexNames.keySet()) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(u);
+      sb.append(" -> [ ");
+      for (Edge e : vertexNames.get(u).adjacentEdges) {
+        sb.append(e.target.name);
+        sb.append("(");
+        sb.append(e.distance);
+        sb.append(") ");
+      }
+      sb.append("]");
+      System.out.println(sb.toString());
     }
   }
 }

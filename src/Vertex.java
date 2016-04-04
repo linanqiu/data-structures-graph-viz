@@ -7,7 +7,7 @@ public class Vertex {
   public int x;
   public int y;
   public boolean known;
-  public double dist; // total distance from origin point
+  public double distance; // total distance from origin point
   public Vertex prev;
   public List<Edge> adjacentEdges;
 
