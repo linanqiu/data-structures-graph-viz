@@ -11,14 +11,14 @@ import java.util.stream.Collectors;
 public class Graph {
 
   // Keep a fast index to nodes in the map
-  private Map<String, Vertex> vertexNames;
+  private Map<Integer, Vertex> vertexNames;
 
   /**
    * Construct an empty Graph with a map. The map's key is the name of a vertex
    * and the map's value is the vertex object.
    */
   public Graph() {
-    vertexNames = new HashMap<String, Vertex>();
+    vertexNames = new HashMap<>();
   }
 
   /**
@@ -64,7 +64,7 @@ public class Graph {
    * @param cost
    *          (double) cost of the edge between vertex u and v
    */
-  public void addEdge(String nameU, String nameV, Double cost) {
+  public void addEdge(int nameU, int nameV, Double cost) {
     if (!vertexNames.containsKey(nameU))
       throw new IllegalArgumentException(nameU + " does not exist. Cannot create edge.");
     if (!vertexNames.containsKey(nameV))
@@ -79,16 +79,16 @@ public class Graph {
    * Adds an undirected edge between vertex u and vertex v by adding a directed
    * edge from u to v, then a directed edge from v to u
    * 
-   * @param nameU
+   * @param name
    *          (String) name of vertex u
-   * @param nameV
+   * @param name2
    *          (String) name of vertex v
    * @param cost
    *          (double) cost of the edge between vertex u and v
    */
-  public void addUndirectedEdge(String nameU, String nameV, double cost) {
-    addEdge(nameU, nameV, cost);
-    addEdge(nameV, nameU, cost);
+  public void addUndirectedEdge(int name, int name2, double cost) {
+    addEdge(name, name2, cost);
+    addEdge(name2, name, cost);
   }
 
   // STUDENT CODE STARTS HERE
@@ -141,10 +141,27 @@ public class Graph {
     vertexNames = new HashMap<>();
     Random random = new Random();
     for (int i = 0; i < n; i++) {
-      int x = random.nextInt(100);
-      int y = random.nextInt(100);
-      Vertex vertex = new Vertex(Integer.toString(i), x, y);
-      vertexNames.put(Integer.toString(i), vertex);
+      if (i > 0) {
+        List<Vertex> candidates = new LinkedList<>();
+        for (int j = 0; j < 100; j++) {
+          candidates.add(new Vertex(i, random.nextInt(100), random.nextInt(100)));
+        }
+        Vertex bestCandidate = Collections.max(candidates, new Comparator<Vertex>() {
+          @Override
+          public int compare(Vertex o1, Vertex o2) {
+            Collection<Vertex> existingVertices = getVertices();
+            double o1MinDistance = computeEuclideanDistance(
+                Collections.min(existingVertices, Comparator.comparing(v -> computeEuclideanDistance(v, o1))), o1);
+            double o2MinDistance = computeEuclideanDistance(
+                Collections.min(existingVertices, Comparator.comparing(v -> computeEuclideanDistance(v, o2))), o2);
+            return Double.compare(o1MinDistance, o2MinDistance);
+          }
+        });
+
+        vertexNames.put(i, bestCandidate);
+      } else {
+        vertexNames.put(i, new Vertex(i, random.nextInt(100), random.nextInt(100)));
+      }
     }
 
     for (Vertex u : getVertices()) {
@@ -163,7 +180,7 @@ public class Graph {
       vertex.known = false;
     }
 
-    Vertex start = vertexNames.get("0");
+    Vertex start = vertexNames.get(0);
     start.known = true;
     Vertex current = start;
 
@@ -188,7 +205,7 @@ public class Graph {
 
     List<Edge> edges = new LinkedList<>();
 
-    Vertex start = vertexNames.get("0");
+    Vertex start = vertexNames.get(0);
     Vertex current = start.prev;
     edges.add(new Edge(start, current, computeEuclideanDistance(start, current)));
 
@@ -214,7 +231,7 @@ public class Graph {
    * Prints out the adjacency list of the graph for debugging
    */
   public void printAdjacencyList() {
-    for (String u : vertexNames.keySet()) {
+    for (int u : vertexNames.keySet()) {
       StringBuilder sb = new StringBuilder();
       sb.append(u);
       sb.append(" -> [ ");

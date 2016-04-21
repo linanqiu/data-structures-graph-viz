@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Vertex {
 
-  public String name;
+  public int name;
   public int x;
   public int y;
   public boolean known;
@@ -11,7 +11,7 @@ public class Vertex {
   public Vertex prev;
   public List<Edge> adjacentEdges;
 
-  public Vertex(String name, int x, int y) {
+  public Vertex(int name, int x, int y) {
     this.name = name;
     this.x = x;
     this.y = y;
@@ -24,7 +24,7 @@ public class Vertex {
   @Override
   public int hashCode() {
     // we assume that each vertex has a unique name
-    return name.hashCode();
+    return name;
   }
 
   @Override
@@ -40,7 +40,7 @@ public class Vertex {
     }
     Vertex oVertex = (Vertex) o;
 
-    return name.equals(oVertex.name) && x == oVertex.x && y == oVertex.y;
+    return name == oVertex.name && x == oVertex.x && y == oVertex.y;
   }
 
   public void addEdge(Edge edge) {
